@@ -292,11 +292,6 @@ public:
     {
 	FUNCTION  = 0, ///< Use the functional interface, implementing your own driver functions (internal use only)
 	DRIVER    = 1, ///< Stepper Driver, 2 driver pins required
-	FULL2WIRE = 2, ///< 2 wire stepper, 2 motor pins required
-	FULL3WIRE = 3, ///< 3 wire stepper, such as HDD spindle, 3 motor pins required
-        FULL4WIRE = 4, ///< 4 wire full stepper, 4 motor pins required
-	HALF3WIRE = 6, ///< 3 wire half stepper, such as HDD spindle, 3 motor pins required
-	HALF4WIRE = 8  ///< 4 wire half stepper, 4 motor pins required
     } MotorInterfaceType;
 
     /// Constructor. You can have multiple simultaneous steppers, all moving
@@ -328,7 +323,7 @@ public:
     /// to pin 5.
     /// \param[in] enable If this is true (the default), enableOutputs() will be called to enable
     /// the output pins at construction time.
-    AccelStepper(uint8_t interface = AccelStepper::FULL4WIRE, uint8_t pin1 = 2, uint8_t pin2 = 3, uint8_t pin3 = 4, uint8_t pin4 = 5, bool enable = true);
+    AccelStepper(uint8_t interface = AccelStepper::DRIVER, uint8_t pin1 = 2, uint8_t pin2 = 3, bool enable = true);
 
     /// Alternate Constructor which will call your own functions for forward and backward steps. 
     /// You can have multiple simultaneous steppers, all moving
@@ -535,40 +530,6 @@ protected:
     /// which is the minimum STEP pulse width for the 3967 driver.
     /// \param[in] step The current step phase number (0 to 7)
     virtual void   step1(long step);
-
-    /// Called to execute a step on a 2 pin motor. Only called when a new step is
-    /// required. Subclasses may override to implement new stepping
-    /// interfaces. The default sets or clears the outputs of pin1 and pin2
-    /// \param[in] step The current step phase number (0 to 7)
-    virtual void   step2(long step);
-
-    /// Called to execute a step on a 3 pin motor, such as HDD spindle. Only called when a new step is
-    /// required. Subclasses may override to implement new stepping
-    /// interfaces. The default sets or clears the outputs of pin1, pin2,
-    /// pin3
-    /// \param[in] step The current step phase number (0 to 7)
-    virtual void   step3(long step);
-
-    /// Called to execute a step on a 4 pin motor. Only called when a new step is
-    /// required. Subclasses may override to implement new stepping
-    /// interfaces. The default sets or clears the outputs of pin1, pin2,
-    /// pin3, pin4.
-    /// \param[in] step The current step phase number (0 to 7)
-    virtual void   step4(long step);
-
-    /// Called to execute a step on a 3 pin motor, such as HDD spindle. Only called when a new step is
-    /// required. Subclasses may override to implement new stepping
-    /// interfaces. The default sets or clears the outputs of pin1, pin2,
-    /// pin3
-    /// \param[in] step The current step phase number (0 to 7)
-    virtual void   step6(long step);
-
-    /// Called to execute a step on a 4 pin half-steper motor. Only called when a new step is
-    /// required. Subclasses may override to implement new stepping
-    /// interfaces. The default sets or clears the outputs of pin1, pin2,
-    /// pin3, pin4.
-    /// \param[in] step The current step phase number (0 to 7)
-    virtual void   step8(long step);
 
 private:
     /// Number of pins on the stepper motor. Permits 2 or 4. 2 pins is a

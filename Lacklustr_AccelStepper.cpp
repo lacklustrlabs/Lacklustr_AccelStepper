@@ -3,7 +3,7 @@
 // Copyright (C) 2009-2013 Mike McCauley
 // $Id: AccelStepper.cpp,v 1.21 2015/08/25 04:57:29 mikem Exp mikem $
 
-#include "AccelStepper.h"
+#include "Lacklustr_AccelStepper.h"
 
 #if 0
 // Some debugging assistance
@@ -189,7 +189,7 @@ boolean AccelStepper::run()
     return _speed != 0.0 || distanceToGo() != 0;
 }
 
-AccelStepper::AccelStepper(uint8_t interface, uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4, bool enable)
+AccelStepper::AccelStepper(uint8_t interface, uint8_t pin1, uint8_t pin2, bool enable)
 {
     _interface = interface;
     _currentPos = 0;
@@ -204,8 +204,6 @@ AccelStepper::AccelStepper(uint8_t interface, uint8_t pin1, uint8_t pin2, uint8_
     _lastStepTime = 0;
     _pin[0] = pin1;
     _pin[1] = pin2;
-    _pin[2] = pin3;
-    _pin[3] = pin4;
 
     // NEW
     _n = 0;
@@ -324,26 +322,7 @@ void AccelStepper::step(long step)
 	case DRIVER:
 	    step1(step);
 	    break;
-    
-	case FULL2WIRE:
-	    step2(step);
-	    break;
-    
-	case FULL3WIRE:
-	    step3(step);
-	    break;  
 
-	case FULL4WIRE:
-	    step4(step);
-	    break;  
-
-	case HALF3WIRE:
-	    step6(step);
-	    break;  
-		
-	case HALF4WIRE:
-	    step8(step);
-	    break;  
     }
 }
 
@@ -354,10 +333,6 @@ void AccelStepper::step(long step)
 void AccelStepper::setOutputPins(uint8_t mask)
 {
     uint8_t numpins = 2;
-    if (_interface == FULL4WIRE || _interface == HALF4WIRE)
-	numpins = 4;
-    else if (_interface == FULL3WIRE || _interface == HALF3WIRE)
-	numpins = 3;
     uint8_t i;
     for (i = 0; i < numpins; i++)
 	digitalWrite(_pin[i], (mask & (1 << i)) ? (HIGH ^ _pinInverted[i]) : (LOW ^ _pinInverted[i]));
@@ -387,152 +362,6 @@ void AccelStepper::step1(long step)
 
 }
 
-
-// 2 pin step function
-// This is passed the current step number (0 to 7)
-// Subclasses can override
-void AccelStepper::step2(long step)
-{
-    switch (step & 0x3)
-    {
-	case 0: /* 01 */
-	    setOutputPins(0b10);
-	    break;
-
-	case 1: /* 11 */
-	    setOutputPins(0b11);
-	    break;
-
-	case 2: /* 10 */
-	    setOutputPins(0b01);
-	    break;
-
-	case 3: /* 00 */
-	    setOutputPins(0b00);
-	    break;
-    }
-}
-// 3 pin step function
-// This is passed the current step number (0 to 7)
-// Subclasses can override
-void AccelStepper::step3(long step)
-{
-    switch (step % 3)
-    {
-	case 0:    // 100
-	    setOutputPins(0b100);
-	    break;
-
-	case 1:    // 001
-	    setOutputPins(0b001);
-	    break;
-
-	case 2:    //010
-	    setOutputPins(0b010);
-	    break;
-	    
-    }
-}
-
-// 4 pin step function for half stepper
-// This is passed the current step number (0 to 7)
-// Subclasses can override
-void AccelStepper::step4(long step)
-{
-    switch (step & 0x3)
-    {
-	case 0:    // 1010
-	    setOutputPins(0b0101);
-	    break;
-
-	case 1:    // 0110
-	    setOutputPins(0b0110);
-	    break;
-
-	case 2:    //0101
-	    setOutputPins(0b1010);
-	    break;
-
-	case 3:    //1001
-	    setOutputPins(0b1001);
-	    break;
-    }
-}
-
-// 3 pin half step function
-// This is passed the current step number (0 to 7)
-// Subclasses can override
-void AccelStepper::step6(long step)
-{
-    switch (step % 6)
-    {
-	case 0:    // 100
-	    setOutputPins(0b100);
-            break;
-	    
-        case 1:    // 101
-	    setOutputPins(0b101);
-            break;
-	    
-	case 2:    // 001
-	    setOutputPins(0b001);
-            break;
-	    
-        case 3:    // 011
-	    setOutputPins(0b011);
-            break;
-	    
-	case 4:    // 010
-	    setOutputPins(0b010);
-            break;
-	    
-	case 5:    // 011
-	    setOutputPins(0b110);
-            break;
-	    
-    }
-}
-
-// 4 pin half step function
-// This is passed the current step number (0 to 7)
-// Subclasses can override
-void AccelStepper::step8(long step)
-{
-    switch (step & 0x7)
-    {
-	case 0:    // 1000
-	    setOutputPins(0b0001);
-            break;
-	    
-        case 1:    // 1010
-	    setOutputPins(0b0101);
-            break;
-	    
-	case 2:    // 0010
-	    setOutputPins(0b0100);
-            break;
-	    
-        case 3:    // 0110
-	    setOutputPins(0b0110);
-            break;
-	    
-	case 4:    // 0100
-	    setOutputPins(0b0010);
-            break;
-	    
-        case 5:    //0101
-	    setOutputPins(0b1010);
-            break;
-	    
-	case 6:    // 0001
-	    setOutputPins(0b1000);
-            break;
-	    
-        case 7:    //1001
-	    setOutputPins(0b1001);
-            break;
-    }
-}
     
 // Prevents power consumption on the outputs
 void    AccelStepper::disableOutputs()
@@ -554,15 +383,6 @@ void    AccelStepper::enableOutputs()
 
     pinMode(_pin[0], OUTPUT);
     pinMode(_pin[1], OUTPUT);
-    if (_interface == FULL4WIRE || _interface == HALF4WIRE)
-    {
-        pinMode(_pin[2], OUTPUT);
-        pinMode(_pin[3], OUTPUT);
-    }
-    else if (_interface == FULL3WIRE || _interface == HALF3WIRE)
-    {
-        pinMode(_pin[2], OUTPUT);
-    }
 
     if (_enablePin != 0xff)
     {

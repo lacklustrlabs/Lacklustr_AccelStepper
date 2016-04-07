@@ -3,8 +3,8 @@
 // Copyright (C) 2015 Mike McCauley
 // $Id: MultiStepper.cpp,v 1.2 2015/10/04 05:16:38 mikem Exp mikem $
 
-#include "MultiStepper.h"
-#include "AccelStepper.h"
+#include "Lacklustr_MultiStepper.h"
+#include "Lacklustr_AccelStepper.h"
 
 MultiStepper::MultiStepper()
     : _num_steppers(0)
