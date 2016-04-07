@@ -1,7 +1,9 @@
 # Lacklustr_AccelStepper
 Stripped down clone of [AccelStepper 1.51](http://www.airspayce.com/mikem/arduino/AccelStepper/) (Arduino)
 
-I was starting to hit the memory cap with a Pro Mini project of mine, so I removed all but the AccelStepper::DRIVER mode from this fork.
+I was starting to hit the memory cap with a Pro Mini project of mine, so I removed all but the`AccelStepper::DRIVER`mode from this fork.
+
+I renamed the files so it will be easy to switch between the real AccelStepper and this clone.
 
 All credit should go to the original creator: Mike McCauley and AirSpayce Pty Ltd.
 
