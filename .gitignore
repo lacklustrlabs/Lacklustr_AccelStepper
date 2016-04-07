@@ -26,3 +26,7 @@
 *.exe
 *.out
 *.app
+
+# OSX turds
+.DS_Store
+
